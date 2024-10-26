@@ -32,7 +32,7 @@ const FunctionCard: React.FC<FunctionCardProps> = ({
       setInput(value);
       onUpdate(index, value);
     } else {
-      setError('Invalid input! Only numbers, x, +, -, *, /, ^, (, ) are allowed.');
+      setError('Invalid input! Only numbers, x, +, -, *, /, ^ are allowed.');
     }
   };
 
@@ -47,7 +47,7 @@ const FunctionCard: React.FC<FunctionCardProps> = ({
       />
       {error && <p className="text-red-500 mt-2">{error}</p>}
       <EquationDropdown nextFunction={nextFunction} />
-      <div className="text-gray-600 mt-2">Result: {result || '-'}</div>
+      <div className="text-gray-600 mt-2">Result: {(result || result === 0) ? result : '-'}</div>
     </div>
   );
 };

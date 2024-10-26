@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import ChainingFunctions from "./components/ChainingFunctions";
 import FunctionCard from "./components/FunctionCard";
 import InitialInput from "./components/InitialInput";
 import OutputDisplay from "./components/OutputDisplay";
@@ -7,15 +8,13 @@ import OutputDisplay from "./components/OutputDisplay";
 type Equation = string;
 type Results = (number | null)[];
 
-const nextFunctionDetails: string[] = ["2", "4", "-", "5", "4"];
+const nextFunctionDetails: string[] = ["2", "4", "-", "5", "3"];
 
-const AtlysParentApp: React.FC = () => {
+const App: React.FC = () => {
   const [initialValue, setInitialValue] = useState<number | "">(2); // Starting input value
   const [results, setResults] = useState<Results>(Array(5).fill(null)); // Store results of each function
-
-  // Default equations for each function
-  const defaultEquations: Equation[] = ["x^2", "2x+4", "x-2", "x/2", "x^2+20"];
-  const [equations, setEquations] = useState<Equation[]>(defaultEquations);
+  const defaultEquations: Equation[] = ["x^2", "2x+4", "x-2", "x/2", "x^2+20"]; // Default equations
+  const [equations, setEquations] = useState<Equation[]>(defaultEquations); // Current all equations
 
   // Handle equation changes from user input
   const updateEquation = (index: number, newEquation: string): void => {
@@ -27,7 +26,7 @@ const AtlysParentApp: React.FC = () => {
   const evaluateEquation = useCallback((equation: string, x: number | ""): number => {
     if (!isValidEquation(equation)) {
       throw new Error(
-        "Invalid equation: Only numbers, x, +, -, *, /, ^, (, ) are allowed."
+        "Invalid equation: Only numbers, x, +, -, *, /, ^ are allowed."
       );
     }
 
@@ -43,7 +42,6 @@ const AtlysParentApp: React.FC = () => {
     try {
       let value = initialValue;
       const newResults: (number | null)[] = [];
-
       [0, 1, 3, 4, 2].forEach((index) => {
         value = evaluateEquation(equations[index], value);
         newResults[index] = value;
@@ -70,7 +68,7 @@ const AtlysParentApp: React.FC = () => {
     return validEquation;
   };
 
-  const functionCardDetal = (keyIndex: number, equation: any, resultIndex: any, nextFunctionIndex: any) => {
+  const functionCardDetal = (keyIndex: number, equation: string, resultIndex: number | null, nextFunctionIndex: string) => {
     return (
       <div key={keyIndex} className="relative m-6 z-10">
         <FunctionCard
@@ -88,55 +86,27 @@ const AtlysParentApp: React.FC = () => {
     <div className="min-h-screen bg-gray-50 p-10 w-full flex items-center flex-col px-64">
       <InitialInput value={initialValue} onChange={setInitialValue} />
       <div className="relative">
+
+        {/* Starting code for showing cards */}
         <div className="grid grid-cols-3 gap-6">
           {defaultEquations.slice(0, 3).map((_, index) => (
             functionCardDetal(index, equations[index], results[index], nextFunctionDetails[index])))}
         </div>
 
         <div className="grid grid-cols-2 gap-6 place-items-center mt-10">
-          {defaultEquations.slice(3, 5).map((_, index) => (
-            functionCardDetal(index + 3, equations[index], results[index], nextFunctionDetails[index])))}
+          {defaultEquations.slice(3, 5).map((_, index) => {
+            const keyIndex = index + 3;
+            return functionCardDetal(keyIndex, equations[keyIndex], results[keyIndex], nextFunctionDetails[keyIndex])}
+          )}
         </div>
+        {/* Ending code for showing cards */}
 
         {/* SVG Lines for Connections */}
-        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
-          <line
-            x1="12%"
-            y1="25%"
-            x2="49%"
-            y2="25%"
-            stroke="blue"
-            strokeWidth="2"
-          />
-          <line
-            x1="55%"
-            y1="25%"
-            x2="35%"
-            y2="63%"
-            stroke="blue"
-            strokeWidth="2"
-          />
-          <line
-            x1="35%"
-            y1="75%"
-            x2="70%"
-            y2="75%"
-            stroke="blue"
-            strokeWidth="2"
-          />
-          <line
-            x1="75%"
-            y1="60%"
-            x2="80%"
-            y2="35%"
-            stroke="blue"
-            strokeWidth="2"
-          />
-        </svg>
+        <ChainingFunctions />
       </div>
-      <OutputDisplay result={results[2]} />
+      <OutputDisplay result={results[2]} /> {/* Final Output */}
     </div>
   );
 };
 
-export default AtlysParentApp;
+export default App;
