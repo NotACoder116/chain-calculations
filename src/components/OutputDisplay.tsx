@@ -6,7 +6,7 @@ interface OutputDisplayProps {
 
 const OutputDisplay: React.FC<OutputDisplayProps> = ({ result }) => (
   <div className="mt-6">
-    <h2 className="text-2xl font-bold">Final Output: {result}</h2>
+    <h2 className="text-2xl font-bold">Final Output: {result || '-'}</h2>
   </div>
 );
 

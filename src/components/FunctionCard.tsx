@@ -47,7 +47,7 @@ const FunctionCard: React.FC<FunctionCardProps> = ({
       />
       {error && <p className="text-red-500 mt-2">{error}</p>}
       <EquationDropdown nextFunction={nextFunction} />
-      <div className="text-gray-600 mt-2">Result: {result}</div>
+      <div className="text-gray-600 mt-2">Result: {result || '-'}</div>
     </div>
   );
 };
