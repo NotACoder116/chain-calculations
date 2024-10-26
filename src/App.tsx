@@ -7,7 +7,7 @@ import OutputDisplay from "./components/OutputDisplay";
 type Equation = string;
 type Results = (number | null)[];
 
-const nextFunctionDetails: string[] = ["2", "4", "-", "5", "4"];
+const nextFunctionDetails: string[] = ["2", "4", "-", "5", "3"];
 
 const AtlysParentApp: React.FC = () => {
   const [initialValue, setInitialValue] = useState<number | "">(2); // Starting input value
@@ -43,7 +43,6 @@ const AtlysParentApp: React.FC = () => {
     try {
       let value = initialValue;
       const newResults: (number | null)[] = [];
-
       [0, 1, 3, 4, 2].forEach((index) => {
         value = evaluateEquation(equations[index], value);
         newResults[index] = value;
@@ -71,6 +70,7 @@ const AtlysParentApp: React.FC = () => {
   };
 
   const functionCardDetal = (keyIndex: number, equation: any, resultIndex: any, nextFunctionIndex: any) => {
+    console.log("Hello", keyIndex, equation)
     return (
       <div key={keyIndex} className="relative m-6 z-10">
         <FunctionCard
@@ -94,8 +94,10 @@ const AtlysParentApp: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-6 place-items-center mt-10">
-          {defaultEquations.slice(3, 5).map((_, index) => (
-            functionCardDetal(index + 3, equations[index], results[index], nextFunctionDetails[index])))}
+          {defaultEquations.slice(3, 5).map((_, index) => {
+            const keyIndex = index + 3;
+            return functionCardDetal(keyIndex, equations[keyIndex], results[keyIndex], nextFunctionDetails[keyIndex])}
+          )}
         </div>
 
         {/* SVG Lines for Connections */}
