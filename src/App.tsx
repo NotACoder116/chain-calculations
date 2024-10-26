@@ -24,6 +24,21 @@ const AtlysParentApp: React.FC = () => {
     setEquations(updated);
   };
 
+  const evaluateEquation = useCallback((equation: string, x: number | ""): number => {
+    if (!isValidEquation(equation)) {
+      throw new Error(
+        "Invalid equation: Only numbers, x, +, -, *, /, ^, (, ) are allowed."
+      );
+    }
+
+    try {
+      const preprocessed = preprocessEquation(equation);
+      return Function("x", `return ${preprocessed}`)(x);
+    } catch (error) {
+      throw new Error("Invalid equation format");
+    }
+  }, []);
+
   const calculateChain = useCallback(() => {
     try {
       let value = initialValue;
@@ -38,7 +53,7 @@ const AtlysParentApp: React.FC = () => {
     } catch (error) {
       console.error("Invalid equation:", error);
     }
-  }, [initialValue, equations]); // Dependencies of useCallback
+  }, [initialValue, equations, evaluateEquation]);
 
   useEffect(() => {
     calculateChain();
@@ -53,21 +68,6 @@ const AtlysParentApp: React.FC = () => {
     const withMultiplication = equation.replace(/(\d)(x)/g, "$1 * $2");
     const validEquation = withMultiplication.replace(/\^/g, "**");
     return validEquation;
-  };
-
-  const evaluateEquation = (equation: string, x: number | ""): number => {
-    if (!isValidEquation(equation)) {
-      throw new Error(
-        "Invalid equation: Only numbers, x, +, -, *, /, ^, (, ) are allowed."
-      );
-    }
-
-    try {
-      const preprocessed = preprocessEquation(equation);
-      return Function("x", `return ${preprocessed}`)(x);
-    } catch (error) {
-      throw new Error("Invalid equation format");
-    }
   };
 
   const functionCardDetal = (keyIndex: number, equation: any, resultIndex: any, nextFunctionIndex: any) => {
@@ -90,32 +90,12 @@ const AtlysParentApp: React.FC = () => {
       <div className="relative">
         <div className="grid grid-cols-3 gap-6">
           {defaultEquations.slice(0, 3).map((_, index) => (
-            functionCardDetal(index, equations[index], results[index], nextFunctionDetails[index])
-            // <div key={index} className="relative m-6 z-10">
-            //   <FunctionCard
-            //     index={index}
-            //     equation={equations[index]}
-            //     onUpdate={updateEquation}
-            //     result={results[index]}
-            //     nextFunction={nextFunctionDetails[index]}
-            //   />
-            // </div>
-          ))}
+            functionCardDetal(index, equations[index], results[index], nextFunctionDetails[index])))}
         </div>
 
         <div className="grid grid-cols-2 gap-6 place-items-center mt-10">
           {defaultEquations.slice(3, 5).map((_, index) => (
-            functionCardDetal(index + 3, equations[index], results[index], nextFunctionDetails[index])
-            // <div key={index + 3} className="relative z-10">
-            //   <FunctionCard
-            //     index={index + 3}
-            //     equation={equations[index + 3]}
-            //     onUpdate={updateEquation}
-            //     result={results[index + 3]}
-            //     nextFunction={nextFunctionDetails[index + 3]}
-            //   />
-            // </div>
-          ))}
+            functionCardDetal(index + 3, equations[index], results[index], nextFunctionDetails[index])))}
         </div>
 
         {/* SVG Lines for Connections */}
@@ -154,7 +134,7 @@ const AtlysParentApp: React.FC = () => {
           />
         </svg>
       </div>
-      <OutputDisplay result={results[2]} /> {/* Final output from function 3 */}
+      <OutputDisplay result={results[2]} />
     </div>
   );
 };
